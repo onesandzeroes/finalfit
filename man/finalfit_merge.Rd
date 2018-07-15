@@ -2,11 +2,14 @@
 % Please edit documentation in R/finalfit_merge.R
 \name{finalfit_merge}
 \alias{finalfit_merge}
+\alias{ff_merge}
 \title{Merge a \code{\link{summary_factorlist}()} table with any number of model
 results tables.}
 \usage{
 finalfit_merge(factorlist, fit2df_df, ref_symbol = "-",
   estimate_name = NULL)
+
+ff_merge(factorlist, fit2df_df, ref_symbol = "-", estimate_name = NULL)
 }
 \arguments{
 \item{factorlist}{Output from \code{\link{summary_factorlist}(...,
@@ -25,8 +28,6 @@ Defaults to OR/HR/Coefficient}
 }
 \value{
 Returns a dataframe of combined tables.
-
-  \code{finalfit} helper functions
 }
 \description{
 A function that takes the output from \code{\link{summary_factorlist}(...,

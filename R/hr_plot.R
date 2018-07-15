@@ -20,11 +20,13 @@
 #' @return Returns a table and plot produced in \code{ggplot2}.
 #'
 #' @family finalfit plot functions
+#' @export
 #'
 #' @examples
 #' # HR plot
 #' library(finalfit)
 #' library(dplyr)
+#' library(ggplot2)
 #'
 #' data(colon_s)
 #' explanatory = c("age.factor", "sex.factor", "obstruct.factor", "perfor.factor")
@@ -48,9 +50,13 @@ hr_plot = function(.data, dependent, explanatory, factorlist=NULL, coxfit=NULL,
                    title_text_size = 18,
                    plot_opts = NULL, table_opts = NULL, ...){
 
-  require("ggplot2", quietly = TRUE)
+  requireNamespace("ggplot2")
 
   # Generate or format factorlist object
+  if(!is.null(factorlist)){
+    if(is.null(factorlist$fit_id)) stop("summary_factorlist function must include fit_id=TRUE")
+  }
+
   if(is.null(factorlist)){
     factorlist = summary_factorlist(.data, dependent, explanatory, fit_id=TRUE)
   }

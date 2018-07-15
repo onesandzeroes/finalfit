@@ -12,9 +12,7 @@
 #'   sorted in increasing amounts of missing information. The last column and
 #'   row contain row and column counts, respectively.
 #'
-#'
-#' \code{finalfit} helper functions
-#'
+#' @export
 #' @examples
 #' library(finalfit)
 #' library(dplyr)
@@ -24,8 +22,11 @@
 #' colon_s %>%
 #' 	finalfit_missing(dependent, explanatory)
 #'
-finalfit_missing = function(.data, dependent, explanatory){
+ff_missing = function(.data, dependent, explanatory){
   keep = names(.data) %in% c(dependent, explanatory)
   df.out = .data[keep]
   mice::md.pattern(df.out)
 }
+
+#' @rdname ff_missing
+finalfit_missing = ff_missing
