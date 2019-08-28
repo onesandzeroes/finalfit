@@ -7,7 +7,7 @@
 coxphmulti(.data, dependent, explanatory)
 }
 \arguments{
-\item{.data}{Dataframe.}
+\item{.data}{Data frame.}
 
 \item{dependent}{Character vector of length 1:  name of survival object in
 form \code{Surv(time, status)}.}
@@ -16,11 +16,11 @@ form \code{Surv(time, status)}.}
 variables.}
 }
 \value{
-A list of univariable \code{\link[survival]{coxph}} fitted model
-  outputs. Output is of class \code{coxphlist}.
+A multivariable \code{\link[survival]{coxph}} fitted model
+  output. Output is of class \code{coxph}.
 }
 \description{
-Using \code{finalfit} conventions, produces multiple multivariable Cox
+Using \code{finalfit} conventions, produces multivariable Cox
 Proportional Hazard regression models for a set of explanatory variables
 against a survival object.
 }
@@ -42,10 +42,12 @@ colon_s \%>\%
 \seealso{
 \code{\link{fit2df}, \link{finalfit_merge}}
 
-Other \code{finalfit} model wrappers: \code{\link{coxphuni}},
+Other finalfit model wrappers: \code{\link{coxphuni}},
+  \code{\link{crrmulti}}, \code{\link{crruni}},
   \code{\link{glmmixed}}, \code{\link{glmmulti_boot}},
   \code{\link{glmmulti}}, \code{\link{glmuni}},
   \code{\link{lmmixed}}, \code{\link{lmmulti}},
-  \code{\link{lmuni}}
+  \code{\link{lmuni}}, \code{\link{svyglmmulti}},
+  \code{\link{svyglmuni}}
 }
-\concept{\code{finalfit} model wrappers}
+\concept{finalfit model wrappers}

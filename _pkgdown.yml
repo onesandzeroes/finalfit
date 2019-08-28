@@ -3,6 +3,7 @@ reference:
     desc: "Single functions to generate final output tables"
     contents:
     - '`finalfit`'
+    - '`finalfit_permute`'
     - '`summary_factorlist`'
   - title: "Model wrappers"
     desc: "Wrappers for common statistical models"
@@ -16,6 +17,8 @@ reference:
     - '`glmmixed`'
     - '`coxphuni`'
     - '`coxphmulti`'
+    - '`crruni`'
+    - '`crrmulti`'
     - '`svyglmuni`'
     - '`svyglmmulti`'
   - title: "Bootstrap functions"
@@ -36,12 +39,13 @@ reference:
     - '`ff_newdata`'
     - '`ff_relabel`'
     - '`ff_remove_ref`'
+    - '`catTestfisher`'
     - '`colname2label`'
     - '`dependent_label`'
     - '`extract_variable_label`'
-    - '`round_tidy`'
+    - '`format_n_percent`'    
     - '`p_tidy`'
-    - '`format_n_percent`'
+    - '`round_tidy`'
   - title: "Plotting"
     desc: ~
     contents:
@@ -68,6 +72,7 @@ reference:
     desc: "Sample data for examples and testing"
     contents:
     - '`colon_s`'
+    - '`wcgs`'
   - title: "Misc"
     desc: ~
     contents:

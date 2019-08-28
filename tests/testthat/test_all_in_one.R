@@ -160,7 +160,18 @@ test_that("summary_factorlist gives dataframe", {
 })
 
 
+context("summary_factorlist function with geometric mean")
+library(finalfit)
 
+test_that("summary_factorlist gives dataframe", {
+	expect_is(summary_factorlist(colon_s, "extent.factor", c("age.factor", "age"),
+															 cont="geometric"), "data.frame")
+})
+
+test_that("summary_factorlist gives error when variable contains zero and geometric mean called", {
+	expect_error(summary_factorlist(colon_s, "extent.factor", c("age.factor", "nodes"),
+															 cont="geometric"))
+})
 
 
 context("summary_factorlist function with median and dep label")
@@ -202,6 +213,7 @@ test_that("summary_factorlist gives dataframe", {
 
 
 
+
 context("summary_factorlist function with survival")
 library(finalfit)
 
@@ -232,4 +244,77 @@ test_that("summary_factorlist don't convert factor", {
 	expect_equal(summary_factorlist(colon_s, "mort_5yr", "sex", cont_cut=0) %>%
 									dim() %>%
 									sum(), 5)
+})
+
+
+context("finalfit_permute")
+library(finalfit)
+
+test_that("finalfit_permute gives a list", {
+	expect_is(ff_permute(
+		colon_s,
+		"nodes",
+		c("age.factor"),
+		c("obstruct.factor", "perfor.factor"),
+		multiple_tables = TRUE,
+		base_on_top = TRUE
+	), "list")
+})
+
+test_that("finalfit_permute gives a list", {
+	expect_is(ff_permute(
+		colon_s,
+		"nodes",
+		c("age.factor"),
+		c("obstruct.factor", "perfor.factor"),
+		multiple_tables = TRUE,
+		base_on_top = FALSE
+	), "list")
+})
+
+test_that("finalfit_permute gives a list", {
+	expect_is(ff_permute(
+		colon_s,
+		"nodes",
+		c("age.factor"),
+		c("obstruct.factor", "perfor.factor"),
+		multiple_tables = FALSE,
+		base_on_top = FALSE
+	), "data.frame")
+})
+
+test_that("finalfit_permute gives a list", {
+	expect_is(ff_permute(
+		colon_s,
+		"nodes",
+		c("age.factor"),
+		c("obstruct.factor", "perfor.factor"),
+		multiple_tables = FALSE,
+		base_on_top = TRUE
+	), "data.frame")
+})
+
+
+test_that("finalfit_permute gives a list", {
+	expect_is(ff_permute(
+		colon_s,
+		"nodes",
+		c("age.factor"),
+		c("obstruct.factor", "perfor.factor"),
+		multiple_tables = TRUE,
+		include_base_model = FALSE,
+		include_full_model = FALSE
+	), "list")
+})
+
+test_that("finalfit_permute gives a list", {
+	expect_is(ff_permute(
+		colon_s,
+		"nodes",
+		c("age.factor"),
+		c("obstruct.factor", "perfor.factor"),
+		multiple_tables = FALSE,
+		include_base_model = FALSE,
+		include_full_model = FALSE
+	), "data.frame")
 })

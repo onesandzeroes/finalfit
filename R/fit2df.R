@@ -33,7 +33,7 @@
 #'   list of two dataframes, one is model parameters, one is model metrics.
 #'   length two
 #'
-#' @family \code{finalfit} model extractors
+#' @family finalfit model extractors
 #'
 #' @export
 #'
@@ -52,8 +52,8 @@
 #' explanatory = c("age.factor", "sex.factor", "obstruct.factor", "perfor.factor")
 #' dependent = "mort_5yr"
 #' colon_s %>%
-#' 	glmmulti(dependent, explanatory) %>%
-#' 	fit2df(estimate_suffix=" (univariable)")
+#'   glmmulti(dependent, explanatory) %>%
+#'   fit2df(estimate_suffix=" (univariable)")
 #'
 #' # glmerMod
 #' explanatory = c("age.factor", "sex.factor", "obstruct.factor", "perfor.factor")
@@ -61,15 +61,15 @@
 #' dependent = "mort_5yr"
 #' colon_s %>%
 #'   glmmixed(dependent, explanatory, random_effect) %>%
-#' 	 fit2df(estimate_suffix=" (multilevel)")
+#'   fit2df(estimate_suffix=" (multilevel)")
 #'
 #' # glmboot
 #' ## Note number of draws set to 100 just for speed in this example
 #' explanatory = c("age.factor", "sex.factor", "obstruct.factor", "perfor.factor")
 #' dependent = "mort_5yr"
 #' colon_s %>%
-#' 	glmmulti_boot(dependent, explanatory,  R = 100) %>%
-#' 	fit2df(estimate_suffix=" (multivariable (BS CIs))")
+#'   glmmulti_boot(dependent, explanatory,  R = 100) %>%
+#'   fit2df(estimate_suffix=" (multivariable (BS CIs))")
 #'
 #' # lm
 #' fit = lm(nodes ~  age.factor + sex.factor + obstruct.factor + perfor.factor,
@@ -84,26 +84,49 @@
 #'
 #' colon_s %>%
 #'   lmmixed(dependent, explanatory, random_effect) %>%
-#' 	 fit2df(estimate_suffix=" (multilevel")
+#'   fit2df(estimate_suffix=" (multilevel")
 #'
 #' # coxphlist
 #' explanatory = c("age.factor", "sex.factor", "obstruct.factor", "perfor.factor")
 #' dependent = "Surv(time, status)"
 #'
 #' colon_s %>%
-#' 	coxphuni(dependent, explanatory) %>%
-#' 	fit2df(estimate_suffix=" (univariable)")
+#'   coxphuni(dependent, explanatory) %>%
+#'   fit2df(estimate_suffix=" (univariable)")
 #'
 #' colon_s %>%
-#' 	coxphmulti(dependent, explanatory) %>%
-#' 	fit2df(estimate_suffix=" (multivariable)")
+#'   coxphmulti(dependent, explanatory) %>%
+#'   fit2df(estimate_suffix=" (multivariable)")
 #'
 #' # coxph
 #' fit = coxph(Surv(time, status) ~ age.factor + sex.factor + obstruct.factor + perfor.factor,
 #'   data = colon_s)
 #'
 #' fit %>%
-#' 	fit2df(estimate_suffix=" (multivariable)")
+#'   fit2df(estimate_suffix=" (multivariable)")
+#' 	
+#' # crr: competing risks
+#' melanoma = boot::melanoma
+#' melanoma = melanoma %>% 
+#'   mutate(
+#'     status_crr = ifelse(status == 2, 0, # "still alive"
+#'       ifelse(status == 1, 1, # "died of melanoma"
+#'       2)), # "died of other causes" 
+#'     sex = factor(sex),
+#'     ulcer = factor(ulcer)
+#'   )
+#'
+#' dependent = c("Surv(time, status_crr)")
+#' explanatory = c("sex", "age", "ulcer")
+#' melanoma %>% 
+#'   summary_factorlist(dependent, explanatory, column = TRUE, fit_id = TRUE) %>% 
+#'   ff_merge(
+#'     melanoma %>% 
+#'       crrmulti(dependent, explanatory) %>% 
+#'       fit2df(estimate_suffix = " (competing risks)")
+#'   ) %>% 
+#' select(-fit_id, -index) %>% 
+#' dependent_label(melanoma, dependent)
 
 fit2df <- function(...){
 	UseMethod("fit2df")
@@ -329,18 +352,18 @@ fit2df.glmlist <- function(.data, condense=TRUE, metrics=FALSE, remove_intercept
 									 confint_level = confint_level,
 									 digits=digits)
 	
-	if (condense==TRUE){
+	if (condense == TRUE){
 		df.out = condense_fit(.data=df.out, explanatory_name=explanatory_name,
 													estimate_name=estimate_name, estimate_suffix=estimate_suffix,
 													p_name=p_name, digits=digits, confint_sep=confint_sep)
 	}
 	
-	if (remove_intercept==TRUE){
+	if (remove_intercept == TRUE){
 		df.out = remove_intercept(df.out)
 	}
 	
 	# Extract model metrics
-	if (metrics==TRUE){
+	if (metrics == TRUE){
 		metrics.out = ff_metrics(.data)
 		return(list(df.out, metrics.out))
 	} else {
@@ -524,40 +547,6 @@ fit2df.coxph <- function(.data, condense=TRUE, metrics=FALSE,
 	}
 }
 
-#' Extract \code{cmprsk::crr} model fit results to dataframe: \code{finalfit} model extracters
-#'
-#' \code{fit2df.crr} is the model extract method for \code{cmprsk::\link[cmprsk]{crr}}.
-#'
-#' @rdname fit2df
-#' @method fit2df crr
-#' @export
-#'
-fit2df.crr <- function(.data, condense=TRUE, metrics=FALSE,
-												 explanatory_name = "explanatory",
-												 estimate_name = "HR",
-												 estimate_suffix = "",
-												 p_name = "p",
-												 digits=c(2,2,3),
-												 confint_sep = "-", ...){
-	
-	df.out = extract_fit(.data=.data, explanatory_name=explanatory_name,
-											 estimate_name=estimate_name, estimate_suffix=estimate_suffix,
-											 p_name=p_name)
-	
-	if (condense==TRUE){
-		df.out = condense_fit(.data=df.out, explanatory_name=explanatory_name,
-													estimate_name=estimate_name, estimate_suffix=estimate_suffix,
-													p_name=p_name, digits=digits, confint_sep=confint_sep)
-	}
-	# Extract model metrics
-	if (metrics==TRUE){
-		metrics.out = ff_metrics(.data)
-		return(list(df.out, metrics.out))
-	} else {
-		return(df.out)
-	}
-}
-
 #' Extract \code{coxphuni} and \code{coxphmulti} model fit results to dataframe: \code{finalfit} model extracters
 #'
 #' \code{fit2df.coxphlist} is the model extract method for \code{coxphuni} and \code{coxphmulti}.
@@ -596,65 +585,137 @@ fit2df.coxphlist <- function(.data, condense=TRUE, metrics=FALSE,
 }
 
 
-# #' Extract \code{stanfit} model fit results to dataframe: \code{finalfit} model
-# #' extracters
-# #'
-# #' \code{fit2df.stanfit} is the model extract method for our standard Bayesian
-# #' hierarchical binomial logistic regression models. These models will be fully
-# #' documented separately. However this should work for a single or multilevel
-# #' Bayesian logistic regression done in Stan, as long as the fixed effects are
-# #' specified in the parameters block as a vector named \code{beta}, of length
-# #' \code{P}, where \code{P} is the number of fixed effect parameters. e.g.
-# #' parameters{ vector[P] beta; }
-# #'
-# #' @rdname fit2df
-# #' @method fit2df stanfit
-# #' @export
-# #'
-# fit2df.stanfit = function(.data, condense=TRUE, metrics=FALSE, remove_intercept=TRUE,
-# 													explanatory_name = "explanatory",
-# 													estimate_name = "OR",
-# 													estimate_suffix = "",
-# 													p_name = "p",
-# 													digits=c(2,2,3),
-# 													confint_sep = "-", ...){
-# 	args = list(...)
-#
-# 	if(is.null(args$X)) stop("Must include design matrix from Stan procedure, e.g. X=X")
-#
-# 	df.out = extract_fit(.data=.data, explanatory_name=explanatory_name,
-# 											 estimate_name=estimate_name, estimate_suffix=estimate_suffix,
-# 											 p_name=p_name, digits=digits, X=args$X)
-#
-# 	if (condense==TRUE){
-# 		df.out = condense_fit(df.out, explanatory_name=explanatory_name,
-# 													estimate_name=estimate_name, estimate_suffix=estimate_suffix,
-# 													p_name=p_name, digits=digits, confint_sep=confint_sep)
-# 	}
-#
-# 	if (remove_intercept==TRUE){
-# 		df.out = remove_intercept(df.out)
-# 	}
-#
-# 	# Extract model metrics
-# 	## This needs an ff_metrics() method
-# 	if (metrics==TRUE){
-# 		# n_data = dim(x$data)[1] # no equivalent here
-# 		n_model = dim(args$X)[1]
-# 		# aic = round(x$aic, 1) # add WAIC later?
-# 		# auc = round(roc(x$y, x$fitted)$auc[1], 3) # Add predicted mu later?
-# 		metrics.out = paste0(
-# 			#	"Number in dataframe = ", n_data,
-# 			", Number in model = ", n_model)
-# 		#	", Missing = ", n_data-n_model,
-# 		#	", AIC = ", aic,
-# 		#	", C-statistic = ", auc)
-# 	}
-#
-# 	if (metrics==TRUE){
-# 		return(list(df.out, metrics.out))
-# 	} else {
-# 		return(df.out)
-# 	}
-# 	return(df.out)
-# }
+#' Extract \code{cmprsk::crr} model fit results to dataframe: \code{finalfit} model extracters
+#'
+#' \code{fit2df.crr} is the model extract method for \code{cmprsk::\link[cmprsk]{crr}}.
+#'
+#' @rdname fit2df
+#' @method fit2df crr
+#' @export
+#'
+fit2df.crr <- function(.data, condense=TRUE, metrics=FALSE,
+												 explanatory_name = "explanatory",
+												 estimate_name = "HR",
+												 estimate_suffix = "",
+												 p_name = "p",
+												 digits=c(2,2,3),
+												 confint_sep = "-", ...){
+	
+	df.out = extract_fit(.data=.data, explanatory_name=explanatory_name,
+											 estimate_name=estimate_name, estimate_suffix=estimate_suffix,
+											 p_name=p_name)
+	
+	if (condense==TRUE){
+		df.out = condense_fit(.data=df.out, explanatory_name=explanatory_name,
+													estimate_name=estimate_name, estimate_suffix=estimate_suffix,
+													p_name=p_name, digits=digits, confint_sep=confint_sep)
+	}
+	# Extract model metrics
+	if (metrics==TRUE){
+		metrics.out = ff_metrics(.data)
+		return(list(df.out, metrics.out))
+	} else {
+		return(df.out)
+	}
+}
+
+#' Extract \code{crruni} and \code{crrmulti} model fit results to dataframe:
+#' \code{finalfit} model extracters
+#'
+#' \code{fit2df.crr} is the model extract method for
+#' \code{crruni} and \code{crrmulti}.
+#'
+#' @rdname fit2df
+#' @method fit2df crrlist
+#' @export
+#' 
+fit2df.crrlist <- function(.data, condense=TRUE, metrics=FALSE,
+											 explanatory_name = "explanatory",
+											 estimate_name = "HR",
+											 estimate_suffix = "",
+											 p_name = "p",
+											 digits=c(2,2,3),
+											 confint_sep = "-", ...){
+	
+	df.out = .data %>% 
+		purrr::map_dfr(extract_fit, explanatory_name=explanatory_name,
+									 estimate_name=estimate_name, estimate_suffix=estimate_suffix,
+									 p_name=p_name, digits=digits)
+
+	
+	if (condense==TRUE){
+		df.out = condense_fit(.data=df.out, explanatory_name=explanatory_name,
+													estimate_name=estimate_name, estimate_suffix=estimate_suffix,
+													p_name=p_name, digits=digits, confint_sep=confint_sep)
+	}
+	# Extract model metrics
+	if (metrics==TRUE){
+		metrics.out = ff_metrics(.data)
+		return(list(df.out, metrics.out))
+	} else {
+		return(df.out)
+	}
+}
+
+#' Extract \code{stanfit} model fit results to dataframe: \code{finalfit} model
+#' extracters
+#'
+#' \code{fit2df.stanfit} is the model extract method for our standard Bayesian
+#' hierarchical binomial logistic regression models. These models will be fully
+#' documented separately. However this should work for a single or multilevel
+#' Bayesian logistic regression done in Stan, as long as the fixed effects are
+#' specified in the parameters block as a vector named \code{beta}, of length
+#' \code{P}, where \code{P} is the number of fixed effect parameters. e.g.
+#' parameters{ vector[P] beta; }
+#'
+#' @rdname fit2df
+#' @method fit2df stanfit
+#' @export
+#'
+fit2df.stanfit = function(.data, condense=TRUE, metrics=FALSE, remove_intercept=TRUE,
+													explanatory_name = "explanatory",
+													estimate_name = "OR",
+													estimate_suffix = "",
+													p_name = "p",
+													digits=c(2,2,3),
+													confint_sep = "-", ...){
+	args = list(...)
+
+	if(is.null(args$X)) stop("Must include design matrix from Stan procedure, e.g. X=X")
+
+	df.out = extract_fit(.data=.data, explanatory_name=explanatory_name,
+											 estimate_name=estimate_name, estimate_suffix=estimate_suffix,
+											 p_name=p_name, digits=digits, X=args$X)
+
+	if (condense==TRUE){
+		df.out = condense_fit(df.out, explanatory_name=explanatory_name,
+													estimate_name=estimate_name, estimate_suffix=estimate_suffix,
+													p_name=p_name, digits=digits, confint_sep=confint_sep)
+	}
+
+	if (remove_intercept==TRUE){
+		df.out = remove_intercept(df.out)
+	}
+
+	# Extract model metrics
+	## This needs an ff_metrics() method
+	if (metrics==TRUE){
+		# n_data = dim(x$data)[1] # no equivalent here
+		n_model = dim(args$X)[1]
+		# aic = round(x$aic, 1) # add WAIC later?
+		# auc = round(roc(x$y, x$fitted)$auc[1], 3) # Add predicted mu later?
+		metrics.out = paste0(
+			#	"Number in dataframe = ", n_data,
+			", Number in model = ", n_model)
+		#	", Missing = ", n_data-n_model,
+		#	", AIC = ", aic,
+		#	", C-statistic = ", auc)
+	}
+
+	if (metrics==TRUE){
+		return(list(df.out, metrics.out))
+	} else {
+		return(df.out)
+	}
+	return(df.out)
+}

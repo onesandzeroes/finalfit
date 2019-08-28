@@ -11,7 +11,8 @@
 #'   ff_label("Sex") %>%
 #'   str()
 ff_label <- function(.var, variable_label){
-	Hmisc::label(.var) = variable_label
+	# Hmisc::label(.var) = variable_label
+	attr(.var, "label") = variable_label
 	return(.var)
 }
 
@@ -82,6 +83,7 @@ extract_variable_label = function(.data){
 #' colon_s %>% str()
 #'   
 ff_relabel <- function(.data, .labels){
+	if(any(class(.data) %in% c("tbl_df", "tbl"))) .data = data.frame(.data) # tbl work different, convert to data.frame
 	for(i in 1:length(.data)){
 		.data[,i] = ff_label(.data[,i], .labels[[i]])
 	}	

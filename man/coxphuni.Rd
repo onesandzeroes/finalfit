@@ -7,7 +7,7 @@
 coxphuni(.data, dependent, explanatory)
 }
 \arguments{
-\item{.data}{Dataframe.}
+\item{.data}{Data frame.}
 
 \item{dependent}{Character vector of length 1:  name of survival object in form \code{Surv(time, status)}.}
 
@@ -39,10 +39,12 @@ colon_s \%>\%
 \seealso{
 \code{\link{fit2df}, \link{finalfit_merge}}
 
-Other \code{finalfit} model wrappers: \code{\link{coxphmulti}},
+Other finalfit model wrappers: \code{\link{coxphmulti}},
+  \code{\link{crrmulti}}, \code{\link{crruni}},
   \code{\link{glmmixed}}, \code{\link{glmmulti_boot}},
   \code{\link{glmmulti}}, \code{\link{glmuni}},
   \code{\link{lmmixed}}, \code{\link{lmmulti}},
-  \code{\link{lmuni}}
+  \code{\link{lmuni}}, \code{\link{svyglmmulti}},
+  \code{\link{svyglmuni}}
 }
-\concept{\code{finalfit} model wrappers}
+\concept{finalfit model wrappers}

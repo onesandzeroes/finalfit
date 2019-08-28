@@ -10,29 +10,29 @@
 finalfit(.data, dependent, explanatory, explanatory_multi = NULL,
   random_effect = NULL, keep_models = FALSE, metrics = FALSE,
   add_dependent_label = TRUE, dependent_label_prefix = "Dependent: ",
-  dependent_label_suffix = "", ...)
+  dependent_label_suffix = "", keep_fit_id = FALSE, ...)
 
 finalfit.lm(.data, dependent, explanatory, explanatory_multi = NULL,
   random_effect = NULL, keep_models = FALSE, metrics = FALSE,
   add_dependent_label = TRUE, dependent_label_prefix = "Dependent: ",
-  dependent_label_suffix = "", ...)
+  dependent_label_suffix = "", keep_fit_id = FALSE, ...)
 
 finalfit.glm(.data, dependent, explanatory, explanatory_multi = NULL,
   random_effect = NULL, keep_models = FALSE, metrics = FALSE,
   add_dependent_label = TRUE, dependent_label_prefix = "Dependent: ",
-  dependent_label_suffix = "", ...)
+  dependent_label_suffix = "", keep_fit_id = FALSE, ...)
 
 finalfit.coxph(.data, dependent, explanatory, explanatory_multi = NULL,
   random_effect = NULL, keep_models = FALSE, metrics = FALSE,
   add_dependent_label = TRUE, dependent_label_prefix = "Dependent: ",
-  dependent_label_suffix = "", ...)
+  dependent_label_suffix = "", keep_fit_id = FALSE, ...)
 }
 \arguments{
-\item{.data}{Dataframe.}
+\item{.data}{Data frame or tibble.}
 
-\item{dependent}{Character vector of length 1:  quoted name of depdendent
+\item{dependent}{Character vector of length 1:  quoted name of dependent
 variable. Can be continuous, a binary factor, or a survival object of form
-\code{Surv(time, status)}}
+\code{Surv(time, status)}.}
 
 \item{explanatory}{Character vector of any length: quoted name(s) of
 explanatory variables.}
@@ -59,12 +59,14 @@ left of table.}
 
 \item{dependent_label_suffix}{Add text after dependent label.}
 
+\item{keep_fit_id}{Keep original model output coefficient label (internal).}
+
 \item{...}{Other arguments to pass to \code{\link{fit2df}}:
 \code{estimate_name, digits, confint_type, confint_level,
 confint_sep}.}
 }
 \value{
-Returns a dataframe with the final model table.
+Returns a data frame with the final model table.
 }
 \description{
 An "all-in-one" function that takes a single dependent variable with a vector
@@ -168,4 +170,4 @@ example.summary \%>\%
 example.final
 
 }
-\concept{\code{finalfit} all-in-one functions}
+\concept{finalfit all-in-one functions}

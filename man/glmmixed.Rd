@@ -16,7 +16,7 @@ glmmixed(.data, dependent, explanatory, random_effect, ...)
 \item{random_effect}{Character vector of length 1, either, (1) name of random
 intercept variable, e.g. "var1", (automatically convered to "(1 | var1)");
 or, (2) the full \code{lme4} specification, e.g. "(var1 | var2)". Note
-parenthesis MUST be included in (2)2 but NOT included in (1).}
+parenthesis MUST be included in (2) but NOT included in (1).}
 
 \item{...}{Other arguments to pass to \code{lme4::\link[lme4]{glmer}}.}
 }
@@ -49,10 +49,12 @@ colon_s \%>\%
 \seealso{
 \code{\link{fit2df}, \link{finalfit_merge}}
 
-Other \code{finalfit} model wrappers: \code{\link{coxphmulti}},
-  \code{\link{coxphuni}}, \code{\link{glmmulti_boot}},
+Other finalfit model wrappers: \code{\link{coxphmulti}},
+  \code{\link{coxphuni}}, \code{\link{crrmulti}},
+  \code{\link{crruni}}, \code{\link{glmmulti_boot}},
   \code{\link{glmmulti}}, \code{\link{glmuni}},
   \code{\link{lmmixed}}, \code{\link{lmmulti}},
-  \code{\link{lmuni}}
+  \code{\link{lmuni}}, \code{\link{svyglmmulti}},
+  \code{\link{svyglmuni}}
 }
-\concept{\code{finalfit} model wrappers}
+\concept{finalfit model wrappers}

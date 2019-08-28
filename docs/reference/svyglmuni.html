@@ -65,7 +65,7 @@ design-based standard errors." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">finalfit</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.2</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.5</span>
       </span>
     </div>
 
@@ -104,6 +104,9 @@ design-based standard errors." />
     </li>
     <li>
       <a href="../articles/missing.html">Missing data</a>
+    </li>
+    <li>
+      <a href="../articles/survival.html">Time-to-event (Survival)</a>
     </li>
   </ul>
 </li>
@@ -174,6 +177,17 @@ variables.</p></td>
     <p>A list of univariable fitted model outputs. Output is of class
   <code>svyglmlist</code>.</p>
     
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='fit2df.html'>fit2df</a>, <a href='ff_merge.html'>finalfit_merge</a></code></p>
+<p>Other finalfit model wrappers: <code><a href='coxphmulti.html'>coxphmulti</a></code>,
+  <code><a href='coxphuni.html'>coxphuni</a></code>, <code><a href='crrmulti.html'>crrmulti</a></code>,
+  <code><a href='crruni.html'>crruni</a></code>, <code><a href='glmmixed.html'>glmmixed</a></code>,
+  <code><a href='glmmulti_boot.html'>glmmulti_boot</a></code>, <code><a href='glmmulti.html'>glmmulti</a></code>,
+  <code><a href='glmuni.html'>glmuni</a></code>, <code><a href='lmmixed.html'>lmmixed</a></code>,
+  <code><a href='lmmulti.html'>lmmulti</a></code>, <code><a href='lmuni.html'>lmuni</a></code>,
+  <code><a href='svyglmmulti.html'>svyglmmulti</a></code></p></div>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Examples taken from survey::svyglm() help page. </span>
@@ -222,7 +236,7 @@ variables.</p></td>
   <span class='fu'><a href='ff_merge.html'>ff_merge</a></span>(<span class='no'>fit_uni</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='ff_merge.html'>ff_merge</a></span>(<span class='no'>fit_multi</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>fit_id</span>, -<span class='no'>index</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='dependent_label.html'>dependent_label</a></span>(<span class='no'>apistrat</span>, <span class='no'>dependent</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Dependent is not a factor and will be treated as a continuous variable</span></div><div class='output co'>#&gt;                 Dependent: API in 2000 (api00)             Mean (sd)
+  <span class='fu'><a href='dependent_label.html'>dependent_label</a></span>(<span class='no'>apistrat</span>, <span class='no'>dependent</span>)</div><div class='output co'>#&gt; <span class='message'>Dependent is not a factor and will be treated as a continuous variable</span></div><div class='output co'>#&gt;                 Dependent: API in 2000 (api00)             Mean (sd)
 #&gt; 1     English language learners (percent)(ell)  [0,84] 652.8 (121.0)
 #&gt; 2              Meals eligible (percent)(meals) [0,100] 652.8 (121.0)
 #&gt; 3 First year at the school (percent)(mobility)  [1,99] 652.8 (121.0)
@@ -267,6 +281,8 @@ variables.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

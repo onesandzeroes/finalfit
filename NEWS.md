@@ -1,7 +1,33 @@
+# finalfit 0.9.5
+
+* `data(wcgs)` added.
+* `summary_factorlist()` geometric sd added. 
+* AIC added to lm metrics.
+* `ff_label()` now does not add class "labelled".
+* Removed capacity for `glmmulti()` and `lmmulti()` to run multiple models from multiple dependent variables. It wasn't used and the list generated was inconvenient for passing output to other functions such as `ggfortify::autoplot()`.
+* `ff_permute()` re-written to allow many more options for producing intermediate models. 
+
+# finalfit 0.9.4
+
+* `coxphuni()` and `coxphmulti()` now take the other `library(survival)` functions `survival::strata()` and `survival::cluster()`. 
+* Fixed `hr_plot()` axis title edit option. 
+* Add option to remove reference level (`remove_ref = TRUE`) to `or_plot()`, `hr_plot()` and `coefficient_plot()`. 
+* `summary_factorlist()` digit rounding option added.
+* `summary_factorlist()` geometric mean option added. 
+* Level label removed for continous variables from `or_plot()`, `hr_plot()` and `coeffient_plot()`. 
+
+# finalfit 0.9.3
+
+* Bug in `or_plot()` and `hr_plot()` introduced in 0.9.2 because of new total column specification. 
+
 # finalfit 0.9.2
 
-* `summary_factorlist()` total column now summaries continuous variables.  #17 #21
-* `svyglmuni()`, `svyglmmulti()` provide support for complex stratified sampling via `library(survey)`. #13
+* Competing risks time-to-event regression now supported via `cmprsk::crr()`: `crruni()`, `crrmulti()` and `fit2df()`.
+* Complex stratified sampling now supported via `library(survey)`: `svyglmuni()`, `svyglmmulti()` provide support for. #13
+* `summary_factorlist()` total column now summarises continuous variables.  #17 #21
+* `summary_factorlist()` can now take any `Hmisc:::summary.formula` argument, such as `catTest = catTestfisher`. 
+*  `catTestfisher()` added. 
+* `finalfit_permute()` added. 
 
 # finalfit 0.9.1
 

@@ -10,8 +10,8 @@ glmmulti(.data, dependent, explanatory, family = "binomial", ...)
 \arguments{
 \item{.data}{Data frame.}
 
-\item{dependent}{Character vector usually of length 1, but can take more than
-1 dependent:  name of depdendent variable (must have 2 levels).}
+\item{dependent}{Character vector of length 1: name of depdendent variable
+(must have 2 levels).}
 
 \item{explanatory}{Character vector of any length: name(s) of explanatory
 variables.}
@@ -22,19 +22,16 @@ and link function to be used in the model, see \code{\link[stats]{glm}}.}
 \item{...}{Other arguments to pass to \code{\link[stats]{glm}}.}
 }
 \value{
-A list of multivariable \code{\link[stats]{glm}} fitted model
-  outputs. Output is of class \code{glmlist}.
+A multivariable \code{\link[stats]{glm}} fitted model.
 }
 \description{
-Using \code{finalfit} conventions, produces multiple multivariable binomial
-logistic regression models for a set of explanatory variables against a
+Using \code{finalfit} conventions, produces a multivariable binomial
+logistic regression model for a set of explanatory variables against a
 binary dependent.
 }
 \details{
 Uses \code{\link[stats]{glm}} with \code{finalfit} modelling conventions.
-Output can be passed to \code{\link{fit2df}}. Note that this function can
-take multiple \code{dependent} variables as well, but performs multiple
-individual models, not a multivariate analysis.
+Output can be passed to \code{\link{fit2df}}.
 }
 \examples{
 library(finalfit)
@@ -50,10 +47,12 @@ colon_s \%>\%
 \seealso{
 \code{\link{fit2df}, \link{finalfit_merge}}
 
-Other \code{finalfit} model wrappers: \code{\link{coxphmulti}},
-  \code{\link{coxphuni}}, \code{\link{glmmixed}},
+Other finalfit model wrappers: \code{\link{coxphmulti}},
+  \code{\link{coxphuni}}, \code{\link{crrmulti}},
+  \code{\link{crruni}}, \code{\link{glmmixed}},
   \code{\link{glmmulti_boot}}, \code{\link{glmuni}},
   \code{\link{lmmixed}}, \code{\link{lmmulti}},
-  \code{\link{lmuni}}
+  \code{\link{lmuni}}, \code{\link{svyglmmulti}},
+  \code{\link{svyglmuni}}
 }
-\concept{\code{finalfit} model wrappers}
+\concept{finalfit model wrappers}

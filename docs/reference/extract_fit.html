@@ -33,7 +33,31 @@
 <meta property="og:title" content="Extract model output to dataframe — extract_fit" />
 
 <meta property="og:description" content="Internal function, not usually called directly.
-Internal function, not called directly." />
+Internal function, not called directly.
+Internal function, not called directly.
+extract_fit.coxme = function(.data, explanatory_name=&quot;explanatory&quot;, estimate_name=&quot;HR&quot;,
+																estimate_suffix = &quot;&quot;,  p_name = &quot;p&quot;,
+																confint_level = 0.95, ...)
+	x=.data
+	if(confint_type == &quot;default&quot;) confint_type = &quot;Wald&quot;
+	explanatory = names(coxme::fixef(x))
+	estimate = exp(coxme::fixef(x))
+	# confint = 
+	# p =
+	L_confint_name = paste0(&quot;L&quot;, confint_level*100)
+	U_confint_name = paste0(&quot;U&quot;, confint_level*100)" />
+
+<meta property="og:description" content="df.out = dplyr::tibble(explanatory, estimate, confint[,1], confint[,2], p)
+	colnames(df.out) = c(explanatory_name, paste0(estimate_name, estimate_suffix),
+											 L_confint_name, U_confint_name, p_name)" />
+
+<meta property="og:description" content="if(confint_level != 0.95)
+		df.out = df.out " />
+
+<meta property="og:description" content="df.out = data.frame(df.out)
+	return(df.out)" />
+
+<meta property="og:description" content="Extract model output to dataframe" />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -64,7 +88,7 @@ Internal function, not called directly." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">finalfit</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.2</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.5</span>
       </span>
     </div>
 
@@ -104,6 +128,9 @@ Internal function, not called directly." />
     <li>
       <a href="../articles/missing.html">Missing data</a>
     </li>
+    <li>
+      <a href="../articles/survival.html">Time-to-event (Survival)</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -139,6 +166,30 @@ Internal function, not called directly." />
     
     <p>Internal function, not usually called directly.</p>
 <p>Internal function, not called directly.</p>
+<p>Internal function, not called directly.</p>
+<p>extract_fit.coxme = function(.data, explanatory_name="explanatory", estimate_name="HR",
+																estimate_suffix = "",  p_name = "p",
+																confint_level = 0.95, ...)
+	x=.data
+	if(confint_type == "default") confint_type = "Wald"
+	explanatory = names(coxme::fixef(x))
+	estimate = exp(coxme::fixef(x))
+	# confint = 
+	# p =
+	L_confint_name = paste0("L", confint_level*100)
+	U_confint_name = paste0("U", confint_level*100)
+
+    df.out = dplyr::tibble(explanatory, estimate, confint[,1], confint[,2], p)
+	colnames(df.out) = c(explanatory_name, paste0(estimate_name, estimate_suffix),
+											 L_confint_name, U_confint_name, p_name)
+
+    if(confint_level != 0.95)
+		df.out = df.out <!-- %&gt;% dplyr::select(-p_name) -->
+
+    df.out = data.frame(df.out)
+	return(df.out)
+
+    Extract model output to dataframe</p>
     
     </div>
 
@@ -166,7 +217,16 @@ Internal function, not called directly." />
 
 <span class='co'># S3 method for coxph</span>
 <span class='fu'>extract_fit</span>(<span class='no'>.data</span>, <span class='kw'>explanatory_name</span> <span class='kw'>=</span> <span class='st'>"explanatory"</span>,
-  <span class='kw'>estimate_name</span> <span class='kw'>=</span> <span class='st'>"HR"</span>, <span class='kw'>estimate_suffix</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>p_name</span> <span class='kw'>=</span> <span class='st'>"p"</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>estimate_name</span> <span class='kw'>=</span> <span class='st'>"HR"</span>, <span class='kw'>estimate_suffix</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>p_name</span> <span class='kw'>=</span> <span class='st'>"p"</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for crr</span>
+<span class='fu'>extract_fit</span>(<span class='no'>.data</span>, <span class='kw'>explanatory_name</span> <span class='kw'>=</span> <span class='st'>"explanatory"</span>,
+  <span class='kw'>estimate_name</span> <span class='kw'>=</span> <span class='st'>"HR"</span>, <span class='kw'>estimate_suffix</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>p_name</span> <span class='kw'>=</span> <span class='st'>"p"</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for stanfit</span>
+<span class='fu'>extract_fit</span>(<span class='no'>.data</span>, <span class='kw'>explanatory_name</span> <span class='kw'>=</span> <span class='st'>"explanatory"</span>,
+  <span class='kw'>estimate_name</span> <span class='kw'>=</span> <span class='st'>"OR"</span>, <span class='kw'>estimate_suffix</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>p_name</span> <span class='kw'>=</span> <span class='st'>"p"</span>,
+  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>3</span>), <span class='no'>X</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -204,6 +264,10 @@ Not implemented for <code>lm, coxph or coxphlist</code>.</p></td>
     <tr>
       <th>confint_level</th>
       <td><p>The confidence level required.</p></td>
+    </tr>
+    <tr>
+      <th>X</th>
+      <td><p>Design matrix from Stan modelling procedure.</p></td>
     </tr>
     </table>
     

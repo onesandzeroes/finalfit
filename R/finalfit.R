@@ -6,10 +6,10 @@
 #' appropriate model is selected on the basis of dependent variable and whether
 #' a random effect is specified.
 #'
-#' @param .data Dataframe.
-#' @param dependent Character vector of length 1:  quoted name of depdendent
+#' @param .data Data frame or tibble.
+#' @param dependent Character vector of length 1:  quoted name of dependent
 #'   variable. Can be continuous, a binary factor, or a survival object of form
-#'   \code{Surv(time, status)}
+#'   \code{Surv(time, status)}.
 #' @param explanatory Character vector of any length: quoted name(s) of
 #'   explanatory variables.
 #' @param explanatory_multi Character vector of any length: quoted name(s) of a
@@ -27,13 +27,14 @@
 #'   left of table.
 #' @param dependent_label_prefix Add text before dependent label.
 #' @param dependent_label_suffix Add text after dependent label.
+#' @param keep_fit_id Keep original model output coefficient label (internal).
 #' @param ... Other arguments to pass to \code{\link{fit2df}}:
 #'   \code{estimate_name, digits, confint_type, confint_level,
 #'   confint_sep}.
 
-#' @return Returns a dataframe with the final model table.
+#' @return Returns a data frame with the final model table.
 #'
-#' @family \code{finalfit} all-in-one functions
+#' @family finalfit all-in-one functions
 #' @export
 #'
 #' @examples
@@ -127,7 +128,8 @@
 
 finalfit = function(.data, dependent, explanatory, explanatory_multi=NULL, random_effect=NULL,
 										keep_models=FALSE, metrics=FALSE, add_dependent_label=TRUE,
-										dependent_label_prefix="Dependent: ", dependent_label_suffix="", ...){
+										dependent_label_prefix="Dependent: ", dependent_label_suffix="", 
+										keep_fit_id = FALSE, ...){
 	if(is.data.frame(.data)==FALSE) stop(".data is not dataframe")
 	if(is.null(explanatory)) stop("No explanatory variable(s) provided")
 	if(is.null(dependent)) stop("No dependent variable provided")
@@ -141,7 +143,8 @@ finalfit = function(.data, dependent, explanatory, explanatory_multi=NULL, rando
 							metrics=metrics,
 							add_dependent_label = add_dependent_label,
 							dependent_label_prefix=dependent_label_prefix,
-							dependent_label_suffix=dependent_label_suffix, ...=...)
+							dependent_label_suffix=dependent_label_suffix, 
+							keep_fit_id=keep_fit_id, ...=...)
 
 	# Fix tibble issue
 	if(any(class(.data) %in% c("tbl_df", "tbl")))  .data = data.frame(.data)
@@ -171,7 +174,8 @@ finalfit = function(.data, dependent, explanatory, explanatory_multi=NULL, rando
 #' @export
 finalfit.lm = function(.data, dependent, explanatory, explanatory_multi=NULL, random_effect=NULL,
 											 keep_models=FALSE, metrics=FALSE, add_dependent_label = TRUE,
-											 dependent_label_prefix="Dependent: ", dependent_label_suffix="", ...){
+											 dependent_label_prefix="Dependent: ", dependent_label_suffix="", 
+											 keep_fit_id=FALSE, ...){
 
 	args = list(...)
 
@@ -315,7 +319,11 @@ finalfit.lm = function(.data, dependent, explanatory, explanatory_multi=NULL, ra
 	# Tidy up
 	index_fit_id = which(names(df.out)=="fit_id")
 	index_index = which(names(df.out)=="index")
-	df.out = df.out[,-c(index_fit_id, index_index)]
+	if(keep_fit_id){
+		df.out = df.out[,-c(index_index)]
+	} else {
+		df.out = df.out[,-c(index_fit_id, index_index)]
+	}
 
 	# Add dependent name label
 	if(add_dependent_label){
@@ -341,7 +349,8 @@ finalfit.lm = function(.data, dependent, explanatory, explanatory_multi=NULL, ra
 #' @export
 finalfit.glm = function(.data, dependent, explanatory, explanatory_multi=NULL, random_effect=NULL,
 												keep_models=FALSE, metrics=FALSE,  add_dependent_label=TRUE,
-												dependent_label_prefix="Dependent: ", dependent_label_suffix="", ...){
+												dependent_label_prefix="Dependent: ", dependent_label_suffix="", 
+												keep_fit_id=FALSE, ...){
 
 	args = list(...)
 
@@ -480,7 +489,11 @@ finalfit.glm = function(.data, dependent, explanatory, explanatory_multi=NULL, r
 	# Tidy up
 	index_fit_id = which(names(df.out)=="fit_id")
 	index_index = which(names(df.out)=="index")
-	df.out = df.out[,-c(index_fit_id, index_index)]
+	if(keep_fit_id){
+		df.out = df.out[,-c(index_index)]
+	} else {
+		df.out = df.out[,-c(index_fit_id, index_index)]
+	}
 
 	# Add dependent name label
 	if(add_dependent_label){
@@ -508,7 +521,8 @@ finalfit.glm = function(.data, dependent, explanatory, explanatory_multi=NULL, r
 #' @export
 finalfit.coxph = function(.data, dependent, explanatory, explanatory_multi=NULL, random_effect=NULL,
 													keep_models=FALSE, metrics=FALSE, add_dependent_label=TRUE,
-													dependent_label_prefix="Dependent: ", dependent_label_suffix="", ...){
+													dependent_label_prefix="Dependent: ", dependent_label_suffix="", 
+													keep_fit_id=FALSE, ...){
 
 	args = list(...)
 
@@ -516,14 +530,18 @@ finalfit.coxph = function(.data, dependent, explanatory, explanatory_multi=NULL,
 	if (is.null(args$estimate_name)) args$estimate_name = "HR"
 
 	# No frailty
-	if(!is.null(random_effect)) stop("Random effects / frailty not currently implemented for Coxph models")
+	if(!is.null(random_effect)) stop("Random effects / frailty from package::coxme not currently implemented.
+																	 Consider adding `cluster(var)` to explanatory list for GEE equivalent.")
 
 	# Cox proprotional hazards model -----------------------------------------------------------
 	# Summary table
-	summary.out = suppressWarnings(
-		summary_factorlist(.data, dependent=NULL, explanatory, fit_id=TRUE)
-	)
-	summary.out = summary.out[,-3] # Remove 'all' column with total counts
+	summary.out = suppressMessages(
+		suppressWarnings(
+			summary_factorlist(.data, dependent, explanatory, column = TRUE, fit_id=TRUE)
+		))
+	
+	# Previous removed, but now include.
+	# summary.out = summary.out[,-3] # Remove 'all' column with total counts
 
 	# Univariable
 	coxphuni_out = coxphuni(.data, dependent, explanatory)
@@ -613,7 +631,11 @@ finalfit.coxph = function(.data, dependent, explanatory, explanatory_multi=NULL,
 	# Tidy up
 	index_fit_id = which(names(df.out)=="fit_id")
 	index_index = which(names(df.out)=="index")
-	df.out = df.out[,-c(index_fit_id, index_index)]
+	if(keep_fit_id){
+		df.out = df.out[,-c(index_index)]
+	} else {
+		df.out = df.out[,-c(index_fit_id, index_index)]
+	}
 
 	# Add dependent name label
 	if(add_dependent_label){
